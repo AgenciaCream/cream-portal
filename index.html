@@ -5,37 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Cream · Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--negro:#0A0A0A;--rojo:#E8001C;--blanco:#fff;--gris:#9a9a9a;--campo:#161616;--borde:#2a2a2a}
+:root{--negro:#000;--rojo:#FF0000;--fondo:#fdfbec;--app:#fffef7;--texto:#0a0a0a;--tenue:#6b6b6b;--borde:rgba(10,10,10,.08);--sombra:0 18px 50px rgba(20,15,0,.07)}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--negro);color:var(--blanco);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
-.caja{width:100%;max-width:380px}
-.marca{font-size:clamp(44px,13vw,64px);font-weight:900;letter-spacing:-.04em;margin:0 0 4px;line-height:1}
-.marca span{color:var(--rojo)}
-.sub{color:var(--gris);margin:0 0 32px;font-size:15px}
-label{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
-input{width:100%;font:inherit;font-size:16px;padding:14px;border-radius:12px;border:1px solid var(--borde);background:var(--campo);color:var(--blanco);margin-bottom:18px}
-input:focus{outline:2px solid var(--rojo);outline-offset:1px;border-color:transparent}
-button{width:100%;font:inherit;font-weight:700;font-size:16px;padding:15px;border:0;border-radius:12px;background:var(--rojo);color:var(--blanco);cursor:pointer}
-button:disabled{opacity:.6;cursor:wait}
-button:focus-visible{outline:2px solid var(--blanco);outline-offset:2px}
-.err{min-height:22px;color:#ff6b7d;font-size:14px;margin:14px 0 0}
-.pie{color:#555;font-size:12px;margin-top:32px}
+html,body{margin:0;min-height:100%}
+body{background:var(--fondo);color:var(--texto);font-family:Inter,system-ui,sans-serif}
+h1{font-family:Nunito,Inter,sans-serif;margin:0}
+.lg-in{display:flex;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;padding:24px 16px;background:var(--fondo);overflow:auto}
+.lg-box{width:100%;max-width:380px;background:var(--app);border:1px solid var(--borde);border-radius:24px;box-shadow:var(--sombra);padding:32px 28px 28px;text-align:center}
+.lg-marca{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:22px}
+.lg-marca svg{width:58px;height:40px;overflow:visible}
+.lg-marca span{font-family:Nunito;font-weight:900;font-size:2rem;letter-spacing:-.02em;color:#E30613}
+.lg-box h1{font-family:Nunito;font-weight:900;font-size:1.45rem;margin:0 0 4px}
+.lg-sub{margin:0 0 24px;color:var(--tenue);font-size:.9rem}
+.lg-f{display:block;text-align:left;margin-bottom:14px}
+.lg-f>span{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
+.lg-w{position:relative}
+.lg-f input{width:100%;height:48px;border:1px solid rgba(10,10,10,.18);border-radius:12px;padding:0 14px;font:inherit;font-size:1rem;background:#fff;color:var(--texto)}
+.lg-f input:focus{outline:none;border-color:#000;box-shadow:0 0 0 3px rgba(242,188,18,.45)}
+.lg-w input{padding-right:52px}
+.lg-ojo{position:absolute;right:4px;top:4px;width:44px;height:40px;border:0;background:none;border-radius:10px;display:grid;place-items:center;color:var(--tenue);cursor:pointer}
+.lg-ojo:hover{color:#000}.lg-ojo:focus-visible{outline:2px solid #000}
+.lg-ojo svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lg-err{min-height:1.3em;margin:2px 0 10px;color:#C40510;font-size:.86rem;font-weight:600;text-align:left}
+.lg-btn{width:100%;height:50px;border:0;border-radius:12px;background:#000;color:#fff;font:inherit;font-weight:700;font-size:1rem;cursor:pointer}
+.lg-btn:hover{background:#222}.lg-btn:focus-visible{outline:3px solid #F2BC12;outline-offset:2px}
+.lg-btn:disabled{opacity:.6;cursor:wait}
+.lg-pie{margin:18px 0 0;font-size:.78rem;color:var(--tenue)}
+.gato .ojos{transform-origin:center 42px;transform-box:view-box}
+@media (max-width:420px){.lg-box{padding:26px 20px 22px;border-radius:20px}}
 </style>
 </head>
 <body>
-<main>
-  <form class="caja" id="f" autocomplete="on" novalidate>
-    <h1 class="marca">Cream<span>.</span></h1>
-    <p class="sub">Portal de clientes</p>
-    <label for="u">Usuario</label>
-    <input id="u" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
-    <label for="p">Contraseña</label>
-    <input id="p" name="password" type="password" autocomplete="current-password" required>
-    <button id="b" type="submit">Entrar</button>
-    <p class="err" id="e" role="alert" aria-live="polite"></p>
-    <p class="pie">¿Problemas para entrar? Escríbele a tu contacto de Cream.</p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="g-cuerpo" viewBox="0 0 120 80"><path d="M22 81C20 56 23 36 30 24L33 6Q35 3 38 6L47 18Q60 15 73 18L83 5Q86 2 88 6L91 24C98 36 101 56 99 81Z"/></symbol></svg>
+<main class="lg-in" id="login" aria-labelledby="lg-t">
+  <form class="lg-box" id="lgForm" autocomplete="on" novalidate>
+    <div class="lg-marca" id="lgMarca"><svg class="gato" viewBox="0 0 120 80" aria-hidden="true"><path class="cola" d="M107 80C106 66 107 56 110 48" stroke="#000" stroke-width="6" stroke-linecap="round" fill="none"/><g class="cuerpo"><use href="#g-cuerpo"/><g class="ojos"><circle cx="47" cy="44" r="9" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="74" cy="44" r="9" fill="none" stroke="#fff" stroke-width="3.2"/><circle class="pupila" cx="47" cy="44" r="5.4"/><circle class="pupila" cx="74" cy="44" r="5.4"/></g></g></svg><span>Cream</span></div>
+    <h1 id="lg-t">Portal de clientes</h1>
+    <p class="lg-sub">Ingresa con la cuenta que te dio Cream.</p>
+    <label class="lg-f"><span>Usuario</span><input id="lgU" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+    <label class="lg-f"><span>Contraseña</span><span class="lg-w"><input id="lgP" name="password" type="password" autocomplete="current-password" required><button class="lg-ojo" id="lgOjo" type="button" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="lg-tacha" d="M4 4l16 16" style="display:none"/></svg></button></span></label>
+    <p class="lg-err" id="lgErr" role="alert" aria-live="polite"></p>
+    <button class="lg-btn" id="lgBtn" type="submit">Ingresar</button>
+    <p class="lg-pie">¿Olvidaste tu contraseña? Escríbenos y te ayudamos.</p>
   </form>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -43,8 +57,9 @@ button:focus-visible{outline:2px solid var(--blanco);outline-offset:2px}
 (function(){
   var URL_SB='https://ekantvadeifnkbrqgceb.supabase.co';
   var KEY='sb_publishable_WqoMHRCLiAGbpjCEYrOJag_vOuWBvn-';
-  var f=document.getElementById('f'),b=document.getElementById('b'),e=document.getElementById('e');
-  function error(t){e.textContent=t;b.disabled=false;b.textContent='Entrar'}
+  var f=document.getElementById('lgForm'),b=document.getElementById('lgBtn'),e=document.getElementById('lgErr');
+  var ojo=document.getElementById('lgOjo');ojo.onclick=function(){var i=document.getElementById('lgP'),ver=i.type==='password';i.type=ver?'text':'password';ojo.setAttribute('aria-pressed',ver);ojo.setAttribute('aria-label',ver?'Ocultar contraseña':'Mostrar contraseña');ojo.querySelector('.lg-tacha').style.display=ver?'':'none';i.focus()};
+  function error(t){e.textContent=t;b.disabled=false;b.textContent='Ingresar'}
   if(!window.supabase){error('No se pudo cargar el sistema de acceso. Revisa tu internet y recarga la página.');return}
   var sb=window.supabase.createClient(URL_SB,KEY);
 
@@ -68,7 +83,7 @@ button:focus-visible{outline:2px solid var(--blanco);outline-offset:2px}
 
   f.addEventListener('submit',async function(ev){
     ev.preventDefault();e.textContent='';
-    var u=document.getElementById('u').value.trim().toLowerCase(),p=document.getElementById('p').value;
+    var u=document.getElementById('lgU').value.trim().toLowerCase(),p=document.getElementById('lgP').value;
     if(!u||!p) return error('Escribe tu usuario y tu contraseña.');
     if(!/^[a-z0-9._-]+$/.test(u)) return error('El usuario solo lleva letras, números, punto o guion.');
     b.disabled=true;b.textContent='Entrando…';
