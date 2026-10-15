@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cream · Portal</title>
+<style>
+:root{--negro:#0A0A0A;--rojo:#E8001C;--blanco:#fff;--gris:#9a9a9a;--campo:#161616;--borde:#2a2a2a}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--negro);color:var(--blanco);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.caja{width:100%;max-width:380px}
+.marca{font-size:clamp(44px,13vw,64px);font-weight:900;letter-spacing:-.04em;margin:0 0 4px;line-height:1}
+.marca span{color:var(--rojo)}
+.sub{color:var(--gris);margin:0 0 32px;font-size:15px}
+label{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
+input{width:100%;font:inherit;font-size:16px;padding:14px;border-radius:12px;border:1px solid var(--borde);background:var(--campo);color:var(--blanco);margin-bottom:18px}
+input:focus{outline:2px solid var(--rojo);outline-offset:1px;border-color:transparent}
+button{width:100%;font:inherit;font-weight:700;font-size:16px;padding:15px;border:0;border-radius:12px;background:var(--rojo);color:var(--blanco);cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+button:focus-visible{outline:2px solid var(--blanco);outline-offset:2px}
+.err{min-height:22px;color:#ff6b7d;font-size:14px;margin:14px 0 0}
+.pie{color:#555;font-size:12px;margin-top:32px}
+</style>
+</head>
+<body>
+<main>
+  <form class="caja" id="f" autocomplete="on" novalidate>
+    <h1 class="marca">Cream<span>.</span></h1>
+    <p class="sub">Portal de clientes</p>
+    <label for="u">Usuario</label>
+    <input id="u" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+    <label for="p">Contraseña</label>
+    <input id="p" name="password" type="password" autocomplete="current-password" required>
+    <button id="b" type="submit">Entrar</button>
+    <p class="err" id="e" role="alert" aria-live="polite"></p>
+    <p class="pie">¿Problemas para entrar? Escríbele a tu contacto de Cream.</p>
+  </form>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+  var URL_SB='https://ekantvadeifnkbrqgceb.supabase.co';
+  var KEY='sb_publishable_WqoMHRCLiAGbpjCEYrOJag_vOuWBvn-';
+  var f=document.getElementById('f'),b=document.getElementById('b'),e=document.getElementById('e');
+  function error(t){e.textContent=t;b.disabled=false;b.textContent='Entrar'}
+  if(!window.supabase){error('No se pudo cargar el sistema de acceso. Revisa tu internet y recarga la página.');return}
+  var sb=window.supabase.createClient(URL_SB,KEY);
+
+  window.CREAM_SALIR=function(){sb.auth.signOut().finally(function(){location.reload()})};
+
+  async function abrirPortal(user){
+    var r=await sb.from('perfiles').select('usuario,nombre,cliente,rol').eq('id',user.id).maybeSingle();
+    if(r.error) throw new Error('No pudimos leer tu cuenta. Intenta de nuevo en un momento.');
+    if(!r.data) throw new Error('Tu usuario existe pero aún no tiene portal asignado. Avísale a Cream.');
+    var perfil=r.data;
+    var d=await sb.storage.from('portales').download(perfil.cliente+'/portal.html');
+    if(d.error||!d.data) throw new Error('Tu portal todavía no está disponible. Avísale a Cream.');
+    var html=await d.data.text();
+    window.CREAM_SESION={usuario:perfil.usuario,nombre:perfil.nombre,cliente:perfil.cliente,rol:perfil.rol};
+    var ses=JSON.stringify(window.CREAM_SESION).replace(/</g,'\\u003c');
+    var pre='<script>window.CREAM_SESION='+ses+';<\/script>';
+    // Inyectar los datos de sesión antes que cualquier script del portal
+    html=/<head[^>]*>/i.test(html)?html.replace(/<head[^>]*>/i,function(m){return m+pre}):pre+html;
+    document.open();document.write(html);document.close();
+  }
+
+  f.addEventListener('submit',async function(ev){
+    ev.preventDefault();e.textContent='';
+    var u=document.getElementById('u').value.trim().toLowerCase(),p=document.getElementById('p').value;
+    if(!u||!p) return error('Escribe tu usuario y tu contraseña.');
+    if(!/^[a-z0-9._-]+$/.test(u)) return error('El usuario solo lleva letras, números, punto o guion.');
+    b.disabled=true;b.textContent='Entrando…';
+    try{
+      var r=await sb.auth.signInWithPassword({email:u+'@cream.portal',password:p});
+      if(r.error){
+        var m=(r.error.message||'').toLowerCase();
+        if(m.indexOf('invalid')>-1) return error('Usuario o contraseña incorrectos.');
+        if(m.indexOf('fetch')>-1||m.indexOf('network')>-1) return error('Sin conexión. Revisa tu internet e intenta otra vez.');
+        return error('No se pudo iniciar sesión. Intenta de nuevo.');
+      }
+      await abrirPortal(r.data.user);
+    }catch(x){
+      var t=(x&&x.message)||'';
+      error(/fetch|network/i.test(t)?'Sin conexión. Revisa tu internet e intenta otra vez.':(t||'Algo salió mal. Intenta de nuevo.'));
+    }
+  });
+
+  // Si ya había sesión abierta, entrar directo
+  sb.auth.getSession().then(function(r){
+    var s=r&&r.data&&r.data.session;
+    if(s&&s.user){b.disabled=true;b.textContent='Abriendo tu portal…';abrirPortal(s.user).catch(function(x){error(x.message)})}
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>
